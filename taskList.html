@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<title></title>
+	<style type="text/css">
+		body{
+    margin-top:0px;
+    background: #f8f8f8;
+}
+
+.todo-nav {
+    margin-top: 10px
+}
+
+.todo-list {
+    margin: 10px 0
+}
+
+.todo-list .todo-item {
+    padding: 15px;
+    margin: 5px 0;
+    border-radius: 0;
+    background: #f7f7f7
+}
+
+.todo-list.only-active .todo-item.complete {
+    display: none
+}
+
+.todo-list.only-active .todo-item:not(.complete) {
+    display: block
+}
+
+.todo-list.only-complete .todo-item:not(.complete) {
+    display: none
+}
+
+.todo-list.only-complete .todo-item.complete {
+    display: block
+}
+
+.todo-list .todo-item.complete span {
+    text-decoration: line-through
+}
+
+.remove-todo-item {
+    color: #ccc;
+    visibility: hidden
+}
+
+.remove-todo-item:hover {
+    color: #5f5f5f
+}
+
+.todo-item:hover .remove-todo-item {
+    visibility: visible
+}
+
+div.checker {
+    width: 18px;
+    height: 18px
+}
+
+div.checker input,
+div.checker span {
+    width: 18px;
+    height: 18px
+}
+
+div.checker span {
+    display: -moz-inline-box;
+    display: inline-block;
+    zoom: 1;
+    text-align: center;
+    background-position: 0 -260px;
+}
+
+div.checker, div.checker input, div.checker span {
+    width: 19px;
+    height: 19px;
+}
+
+div.checker, div.radio, div.uploader {
+    position: relative;
+}
+
+div.button, div.button *, div.checker, div.checker *, div.radio, div.radio *, div.selector, div.selector *, div.uploader, div.uploader * {
+    margin: 0;
+    padding: 0;
+}
+
+div.button, div.checker, div.radio, div.selector, div.uploader {
+    display: -moz-inline-box;
+    display: inline-block;
+    zoom: 1;
+    vertical-align: middle;
+}
+
+.card {
+    padding: 25px;
+    margin-bottom: 20px;
+    border: initial;
+    background: #fff;
+    border-radius: calc(.15rem - 1px);
+    box-shadow: 0 1px 15px rgba(0,0,0,0.04), 0 1px 6px rgba(0,0,0,0.04);
+}
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  position: fixed;
+  background: rgba(201.25, 201.25, 201.25, 1);
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  outline: none;
+}
+#container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.spline-watermark {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  z-index: 2;
+}
+
+.spline-watermark:hover {
+  opacity: 0.8;
+}
+
+.spline-watermark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+	</style>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+<script src="https://cdn.spline.design/lib/anime.min.js"></script>
+<script src="https://assets.codepen.io/9589/spline.runtime.min.js"></script>
+<body>
+
+<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+  <!-- Brand -->
+  <a class="navbar-brand" href="#">Swaasthya</a>
+
+  <!-- Toggler/collapsibe Button -->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <!-- Navbar links -->
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+       <li class="nav-item">
+        <a class="nav-link" href="http://localhost/swasthya/index.php">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="http://localhost/swasthya/search/index.php">Search</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+<div class="container" style="position: relative;"> 
+      <canvas id="canvas3d" style="position: absolute;"></canvas>
+    <div class="row" style="position:absolute;">
+        <div class="col-md-12">
+            <div class="card card-white">
+                <div class="card-body">
+                    <form action="javascript:void(0);">
+                        <input type="text" class="form-control add-task" placeholder="New Task...">
+                    </form>
+                    <ul class="nav nav-pills todo-nav">
+                        <li role="presentation" class="nav-item all-task active"><a href="#" class="nav-link">All</a></li>
+                        <li role="presentation" class="nav-item active-task"><a href="#" class="nav-link">Active</a></li>
+                        <li role="presentation" class="nav-item completed-task"><a href="#" class="nav-link">Completed</a></li>
+                    </ul>
+                    <div class="todo-list">
+                        <div class="todo-item">
+                            <div class="checker"><span class=""><input type="checkbox"></span></div>
+                            <span>Create theme</span>
+                            <a href="javascript:void(0);" class="float-right remove-todo-item"><i class="icon-close"></i></a>
+                        </div>
+                        <div class="todo-item">
+                            <div class="checker"><span class=""><input type="checkbox"></span></div>
+                            <span>Work on wordpress</span>
+                            <a href="javascript:void(0);" class="float-right remove-todo-item"><i class="icon-close"></i></a>
+                        </div>
+                        
+                        <div class="todo-item">
+                            <div class="checker"><span class=""><input type="checkbox"></span></div>
+                            <span>Organize office main department</span>
+                            <a href="javascript:void(0);" class="float-right remove-todo-item"><i class="icon-close"></i></a>
+                        </div>
+                        <div class="todo-item">
+                            <div class="checker"><span><input type="checkbox"></span></div>
+                            <span>Error solve in HTML template</span>
+                            <a href="javascript:void(0);" class="float-right remove-todo-item"><i class="icon-close"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+  const app = new SpeRuntime.Application();
+app.start("https://assets.codepen.io/9589/scene.gltf");
+
+</script>
+<script type="text/javascript">
+	$( document ).ready(function() {
+    
+    "use strict";
+    
+    var todo = function() { 
+        $('.todo-list .todo-item input').click(function() {
+        if($(this).is(':checked')) {
+            $(this).parent().parent().parent().toggleClass('complete');
+        } else {
+            $(this).parent().parent().parent().toggleClass('complete');
+        }
+    });
+    
+    $('.todo-nav .all-task').click(function() {
+        $('.todo-list').removeClass('only-active');
+        $('.todo-list').removeClass('only-complete');
+        $('.todo-nav li.active').removeClass('active');
+        $(this).addClass('active');
+    });
+    
+    $('.todo-nav .active-task').click(function() {
+        $('.todo-list').removeClass('only-complete');
+        $('.todo-list').addClass('only-active');
+        $('.todo-nav li.active').removeClass('active');
+        $(this).addClass('active');
+    });
+    
+    $('.todo-nav .completed-task').click(function() {
+        $('.todo-list').removeClass('only-active');
+        $('.todo-list').addClass('only-complete');
+        $('.todo-nav li.active').removeClass('active');
+        $(this).addClass('active');
+    });
+    
+    $('#uniform-all-complete input').click(function() {
+        if($(this).is(':checked')) {
+            $('.todo-item .checker span:not(.checked) input').click();
+        } else {
+            $('.todo-item .checker span.checked input').click();
+        }
+    });
+    
+    $('.remove-todo-item').click(function() {
+        $(this).parent().remove();
+    });
+    };
+    
+    todo();
+    
+    $(".add-task").keypress(function (e) {
+        if ((e.which == 13)&&(!$(this).val().length == 0)) {
+            $.ajax({
+                url:"http://127.0.0.1:5000/user/addTask",
+                type:"post",
+                data:{"task":$(this).val()},
+                success:function(data){
+                    console.log(data);
+                }
+            });
+            $('<div class="todo-item"><div class="checker"><span class=""><input type="checkbox"></span></div> <span>' + $(this).val() + '</span> <a href="javascript:void(0);" class="float-right remove-todo-item"><i class="icon-close"></i></a></div>').insertAfter('.todo-list .todo-item:last-child');
+            $(this).val('');
+        } else if(e.which == 13) {
+            alert('Please enter new task');
+        }
+        $(document).on('.todo-list .todo-item.added input').click(function() {
+            if($(this).is(':checked')) {
+                $(this).parent().parent().parent().toggleClass('complete');
+            } else {
+                $(this).parent().parent().parent().toggleClass('complete');
+            }
+        });
+        $('.todo-list .todo-item.added .remove-todo-item').click(function() {
+            $(this).parent().remove();
+        });
+    });
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+</body>
+</html>
